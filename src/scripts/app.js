@@ -13,61 +13,61 @@ carcloudApp
                       localStorageServiceProvider, HateoasInterceptorProvider, USER_ROLES) {
                 $routeProvider
                     .when('/register', {
-                              templateUrl: 'views/register.html',
+                              templateUrl: 'templates/register.html',
                               controller: 'RegisterController',
                               access: {
                                   authorities: [USER_ROLES.all]
                               }
                           })
                     .when('/login', {
-                              templateUrl: 'views/login.html',
+                              templateUrl: 'templates/login.html',
                               controller: 'LoginController',
                               access: {
                                   authorities: [USER_ROLES.all]
                               }
                           })
                     .when('/error', {
-                              templateUrl: 'views/error.html',
+                              templateUrl: 'templates/error.html',
                               access: {
                                   authorities: [USER_ROLES.all]
                               }
                           })
                     .when('/settings', {
-                              templateUrl: 'views/settings.html',
+                              templateUrl: 'templates/settings.html',
                               controller: 'SettingsController',
                               access: {
                                   authorities: [USER_ROLES.user]
                               }
                           })
                     .when('/password', {
-                              templateUrl: 'views/password.html',
+                              templateUrl: 'templates/password.html',
                               controller: 'PasswordController',
                               access: {
                                   authorities: [USER_ROLES.user]
                               }
                           })
                     .when('/metrics', {
-                              templateUrl: 'views/metrics.html',
+                              templateUrl: 'templates/metrics.html',
                               controller: 'MetricsController',
                               access: {
                                   authorities: [USER_ROLES.user]
                               }
                           })
                     .when('/logout', {
-                              templateUrl: 'views/main.html',
+                              templateUrl: 'templates/main.html',
                               controller: 'LogoutController',
                               access: {
                                   authorities: [USER_ROLES.user]
                               }
                           })
                     .when('/docs', {
-                              templateUrl: 'views/docs.html',
+                              templateUrl: 'templates/docs.html',
                               access: {
                                   authorities: [USER_ROLES.user]
                               }
                           })
                     .otherwise({
-                                   templateUrl: 'views/main.html',
+                                   templateUrl: 'templates/main.html',
                                    controller: 'MainController',
                                    access: {
                                        authorities: [USER_ROLES.all]

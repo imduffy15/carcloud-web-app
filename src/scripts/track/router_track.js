@@ -4,7 +4,7 @@ carcloudApp
     .config(function ($routeProvider, $httpProvider, USER_ROLES) {
                 $routeProvider
                     .when('/track', {
-                              templateUrl: 'views/tracks.html',
+                              templateUrl: 'templates/tracks.html',
                               controller: 'TrackController',
                               resolve: {
                                   resolvedTrack: ['Track', function (Track) {

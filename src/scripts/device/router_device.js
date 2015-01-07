@@ -4,7 +4,7 @@ carcloudApp
     .config(function ($routeProvider, $httpProvider, USER_ROLES) {
                 $routeProvider
                     .when('/device', {
-                              templateUrl: 'views/devices.html',
+                              templateUrl: 'templates/devices.html',
                               controller: 'DeviceListController',
                               resolve: {
                                   resolvedDevice: function ($q, Device) {
@@ -26,7 +26,7 @@ carcloudApp
                               }
                           })
                     .when('/device/:id', {
-                              templateUrl: 'views/device.html',
+                              templateUrl: 'templates/device.html',
                               controller: 'DeviceController',
                               resolve: {
                                   resolvedDevice: function ($route, $q, Device) {

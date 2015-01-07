@@ -20,9 +20,8 @@ var gulp = require('gulp'),
     browserify = require('gulp-browserify');
 
 var yeoman = {
-    app: 'src/main/webapp/',//require('./bower.json').appPath || 'app',
-    dist: 'src/main/webapp/dist/',
-    test: 'src/test/javascript/spec/',
+    app: 'src/',
+    dist: 'www/',
     tmp: '.tmp/'
 };
 
@@ -36,21 +35,20 @@ gulp.task('clean:tmp', function () {
         pipe(clean());
 });
 
-gulp.task('test', function () {
-});
-
 gulp.task('copy', ['clean'], function () {
-    return es.merge(gulp.src(yeoman.app + 'i18n/**').
-            pipe(gulp.dest(yeoman.dist + 'i18n/')),
+    return es.merge(
         gulp.src(yeoman.app + '**/*.{woff,svg,ttf,eot}').
             pipe(flatten()).
-            pipe(gulp.dest(yeoman.dist + 'fonts/')));
+            pipe(gulp.dest(yeoman.dist + 'fonts/')),
+        gulp.src(yeoman.app + 'swagger-ui/**/*', {'base': 'src/'}).
+            pipe(gulp.dest(yeoman.dist))
+    );
 });
 
 gulp.task('images', function () {
-    return gulp.src(yeoman.app + 'images/**').
+    return gulp.src(yeoman.app + 'img/**').
         pipe(imagemin({optimizationLevel: 5})).
-        pipe(gulp.dest(yeoman.dist + 'images'));
+        pipe(gulp.dest(yeoman.dist + 'img'));
 });
 
 
@@ -64,53 +62,14 @@ gulp.task('server', ['watch'], function () {
         {
             root: [yeoman.app, yeoman.tmp],
             port: 9000,
-            livereload: true,
-            middleware: function (connect, o) {
-                return [
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/app');
-                        options.route = '/app';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/api-docs');
-                        options.route = '/api-docs';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/metrics');
-                        options.route = '/metrics';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/dump');
-                        options.route = '/dump';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/console');
-                        options.route = '/console';
-                        return proxy(options);
-                    })()
-                ];
-            }
+            livereload: true
         }
     );
 });
 
 gulp.task('watch', function () {
     gulp.watch(yeoman.app + 'scripts/**', ['browserify']);
-    gulp.watch('src/images/**', ['images']);
+    gulp.watch(yeoman.app + 'img/**', ['images']);
     livereload();
 });
 
@@ -118,54 +77,7 @@ gulp.task('server:dist', ['build'], function () {
     connect.server(
         {
             root: [yeoman.dist],
-            port: 9000,
-            //livereload: true,
-            middleware: function (connect, o) {
-                return [
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/app');
-                        options.route = '/app';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/metrics');
-                        options.route = '/metrics';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/dump');
-                        options.route = '/dump';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/api-docs');
-                        options.route = '/api-docs';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/oauth/token');
-                        options.route = '/oauth/token';
-                        return proxy(options);
-                    })(),
-                    (function () {
-                        var url = require('url');
-                        var proxy = require('proxy-middleware');
-                        var options = url.parse('http://localhost:8080/console');
-                        options.route = '/console';
-                        return proxy(options);
-                    })()
-                ];
-            }
+            port: 9000
         }
     );
 });
@@ -175,11 +87,11 @@ gulp.task('build', ['clean', 'copy'], function () {
 });
 
 gulp.task('usemin', ['images', 'styles'], function () {
-    return gulp.src(yeoman.app + '{,views/}*.html').
+    return gulp.src(yeoman.app + '{,templates/}*.html').
         pipe(usemin({
             css: [
                 prefix.apply(),
-                replace(/[0-9a-zA-Z\-_\s\.\/]*\/([a-zA-Z\-_\.0-9]*\.(woff|eot|ttf|svg))/g, '/fonts/$1'),
+                replace(/[0-9a-zA-Z\-_\s\.\/]*\/([a-zA-Z\-_\.0-9]*\.(woff|eot|ttf|svg))/g, '../fonts/$1'),
                 minifyCss(),
                 'concat',
                 rev()
@@ -188,8 +100,8 @@ gulp.task('usemin', ['images', 'styles'], function () {
                 minifyHtml({empty: true, conditionals: true})
             ],
             js: [
-                ngAnnotate(),
-                uglify({'mangle': false}),
+                //ngAnnotate(),
+                uglify({mangle: false}),
                 'concat',
                 rev()
             ]
@@ -198,6 +110,5 @@ gulp.task('usemin', ['images', 'styles'], function () {
 });
 
 gulp.task('default', function () {
-    gulp.run('test');
     gulp.run('build');
 });

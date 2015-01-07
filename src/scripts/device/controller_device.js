@@ -9,7 +9,7 @@ carcloudApp.controller('DeviceListController',
 
                            $scope.openAddDeviceModal = function () {
                                $modal.open({
-                                               templateUrl: 'views/devices-add.html',
+                                               templateUrl: 'templates/devices-add.html',
                                                controller: 'DeviceAddController',
                                                resolve: {
                                                    $parentScope: function () {
@@ -21,7 +21,7 @@ carcloudApp.controller('DeviceListController',
 
                            $scope.openEditDeviceModal = function (id) {
                                $modal.open({
-                                               templateUrl: 'views/devices-edit.html',
+                                               templateUrl: 'templates/devices-edit.html',
                                                controller: 'DeviceEditController',
                                                resolve: {
                                                    $parentScope: function () {
@@ -36,7 +36,7 @@ carcloudApp.controller('DeviceListController',
 
                            $scope.openOwnersDeviceModal = function (id) {
                                $modal.open({
-                                               templateUrl: 'views/devices-owners.html',
+                                               templateUrl: 'templates/devices-owners.html',
                                                controller: 'DeviceOwnersController',
                                                resolve: {
                                                    $parentScope: function () {

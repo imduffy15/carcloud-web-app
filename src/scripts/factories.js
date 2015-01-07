@@ -1,37 +1,37 @@
 'use strict';
 
-carcloudApp.factory('Account', function ($resource) {
-    return $resource('app/rest/account', {}, {
+carcloudApp.factory('Account', function ($resource, API_DETAILS) {
+    return $resource(API_DETAILS.baseUrl + 'app/rest/account', {}, {
         'update': {method: 'PUT'}
     });
 });
 
-carcloudApp.factory('User', function ($resource) {
-    return $resource('app/rest/users', {}, {
+carcloudApp.factory('User', function ($resource, API_DETAILS) {
+    return $resource(API_DETAILS.baseUrl + 'app/rest/users', {}, {
         'get': {method: 'GET', isArray: true}
     });
 });
 
-carcloudApp.factory('MetricsService', function ($resource) {
-    return $resource('metrics/metrics', {}, {
+carcloudApp.factory('MetricsService', function ($resource, API_DETAILS) {
+    return $resource(API_DETAILS.baseUrl + 'metrics/metrics', {}, {
         'get': {method: 'GET'}
     });
 });
 
-carcloudApp.factory('ThreadDumpService', function ($http) {
+carcloudApp.factory('ThreadDumpService', function ($http, API_DETAILS) {
     return {
         dump: function () {
-            return $http.get('dump').then(function (response) {
+            return $http.get(API_DETAILS.baseUrl + 'dump').then(function (response) {
                 return response.data;
             });
         }
     };
 });
 
-carcloudApp.factory('HealthCheckService', function ($rootScope, $http) {
+carcloudApp.factory('HealthCheckService', function ($rootScope, $http, API_DETAILS) {
     return {
         check: function () {
-            return $http.get('health').then(function (response) {
+            return $http.get(API_DETAILS.baseUrl + 'health').then(function (response) {
                 return response.data;
             });
         }
