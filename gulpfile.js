@@ -39,9 +39,9 @@ gulp.task('copy', ['clean'], function () {
     return es.merge(
         gulp.src(yeoman.app + '**/*.{woff,svg,ttf,eot}').
             pipe(flatten()).
-            pipe(gulp.dest(yeoman.dist + 'fonts/')),
-        gulp.src(yeoman.app + 'swagger-ui/**/*', {'base': 'src/'}).
-            pipe(gulp.dest(yeoman.dist))
+            pipe(gulp.dest(yeoman.dist + 'fonts/'))
+        // gulp.src(yeoman.app + 'swagger-ui/**/*', {'base': 'src/'}).
+        //     pipe(gulp.dest(yeoman.dist))
     );
 });
 
@@ -68,8 +68,6 @@ gulp.task('server', ['watch'], function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(yeoman.app + 'scripts/**', ['browserify']);
-    gulp.watch(yeoman.app + 'img/**', ['images']);
     livereload();
 });
 
@@ -87,7 +85,7 @@ gulp.task('build', ['clean', 'copy'], function () {
 });
 
 gulp.task('usemin', ['images', 'styles'], function () {
-    return gulp.src(yeoman.app + '{,templates/}*.html').
+    return gulp.src(yeoman.app + '{,templates/,swagger-ui/}*.html').
         pipe(usemin({
             css: [
                 prefix.apply(),
