@@ -98,3 +98,13 @@ ul#strength {
 }
 
 .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+#map {
+    height:600px;
+    width:100%;
+}
+
+.infoWindowContent table{
+    width:100%;
+    table-layout:fixed;
+}
