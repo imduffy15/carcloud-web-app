@@ -99,8 +99,6 @@ carcloudApp
                 httpHeaders.common['Authorization'] = 'Bearer ' + Token.get().accessToken;
             }
 
-            console.log("route change");
-
             AuthenticationService.valid(next.access.authorities);
         });
 

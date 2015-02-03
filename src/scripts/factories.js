@@ -127,10 +127,8 @@ carcloudApp.factory('AuthenticationService',
 
             Account.get().$promise.then(
                 function (account) {
-                    console.log('getting account success');
                     account.resource("authorities").query().$promise.then(
                         function (authorities) {
-                            console.log("getting authorities success");
                             Session.set(
                                 account.username,
                                 account.firstName,
@@ -141,18 +139,15 @@ carcloudApp.factory('AuthenticationService',
                             authService.loginConfirmed(null, function (config) {
                                 config.headers.Authorization =
                                     "Bearer " + Token.get().accessToken;
-                                console.log(config);
                                 return config;
                             });
                         },
                         function (data, status, headers, config) {
-                            console.log("issue getting authorities");
                             authenticationError(data, status, headers, config)
                         }
                     );
                 },
                 function (data, status, headers, config) {
-                    console.log("issue getting account");
                     authenticationError(data, status, headers, config)
                 }
             )
@@ -180,11 +175,9 @@ carcloudApp.factory('AuthenticationService',
                 }
             })
                 .success(function (data, status, headers, config) {
-                    console.log('oauth token success');
                     authenticationSuccess(data, status, headers, config)
                 })
                 .error(function (data, status, headers, config) {
-                    console.log('issue on oauth token');
                     authenticationError(data, status, headers, config)
                 });
         };
@@ -198,8 +191,6 @@ carcloudApp.factory('AuthenticationService',
 
         authenticationService.isAuthorized = function (authorities) {
 
-            console.log(authorities);
-
             if (!angular.isArray(authorities)) {
                 if (authorities === '*') {
                     return true;
@@ -211,16 +202,12 @@ carcloudApp.factory('AuthenticationService',
 
             angular.forEach(authorities, function (authority) {
 
-                console.log("Authority is: " + authority);
-
                 var authorized = ($rootScope.authenticated && $rootScope.account.authorities.indexOf(authority) !== -1);
 
                 if (authorized || authority === '*') {
                     isAuthorized = true;
                 }
             });
-
-            console.log("Returning: " + isAuthorized);
 
             return isAuthorized;
 

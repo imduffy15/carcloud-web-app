@@ -210,8 +210,6 @@ carcloudApp.controller('DeviceOwnersController',
                             function (value,
                                       key) {
                                 if (!$scope.device.owners[key]) {
-                                    console.log("adding "
-                                    + key);
                                     $scope.device.owners[key] =
                                         value;
                                 }
