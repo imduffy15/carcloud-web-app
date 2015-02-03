@@ -189,6 +189,48 @@ carcloudApp.factory('AuthenticationService',
                                        });
                         };
 
+                        authenticationService.valid = function (authorities) {
+                            if(!$rootScope.isAuthorized(authorities)) {
+                                event.preventDefault();
+                                console.log("broadcasting error");
+                                //$rootScope.$broadcast("event:auth-notAuthorized");
+                            }
+                        };
+
+                        authenticationService.isAuthorized = function(authorities) {
+
+                            console.log(authorities);
+
+                            if(!angular.isArray(authorities)) {
+                                if(authorities === '*') {
+                                    return true;
+                                }
+                                authorities = [authorities];
+                            }
+
+                            var isAuthorized = false;
+
+                            if($rootScope.account) {
+
+                                angular.forEach(authorities, function(authority) {
+
+                                    console.log("Authority is: " + authority);
+
+                                    var authorized = ($rootScope.authenticated && $rootScope.account.authorities.indexOf(authority) !== -1);
+
+                                    if(authorized || authority === '*') {
+                                        isAuthorized = true;
+                                    }
+                                });
+
+                            }
+
+                            console.log("Returning: " + isAuthorized);
+
+                            return isAuthorized;
+
+                        };
+
                         authenticationService.logout = function () {
                             $rootScope.authenticated = false;
                             $rootScope.authenticationError = false;

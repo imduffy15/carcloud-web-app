@@ -4,7 +4,7 @@
 var httpHeaders;
 
 var carcloudApp = angular.module('carcloudApp', ['http-auth-interceptor', 'ngResource', 'ngRoute',
-                                                 'ngCookies', 'hateoas', 'ngMap', 'angular-loading-bar',
+                                                 'ngCookies', 'hateoas', 'angular-loading-bar',
                                                  'ngAnimate', 'LocalStorageModule', 'base64',
                                                  'ui.bootstrap']);
 
@@ -50,7 +50,7 @@ carcloudApp
                               templateUrl: 'templates/metrics.html',
                               controller: 'MetricsController',
                               access: {
-                                  authorities: [USER_ROLES.user]
+                                  authorities: [USER_ROLES.admin]
                               }
                           })
                     .when('/logout', {
@@ -93,9 +93,15 @@ carcloudApp
                  $rootScope.authenticated = !!Session.get();
                  $rootScope.account = Session.get();
 
+                 $rootScope.isAuthorized = AuthenticationService.isAuthorized;
+
                  if (Token.get()) {
                      httpHeaders.common['Authorization'] = 'Bearer ' + Token.get().accessToken;
                  }
+
+                 console.log("route change");
+
+                 AuthenticationService.valid(next.access.authorities);
              });
 
              // Call when the the client is confirmed

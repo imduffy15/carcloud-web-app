@@ -1,7 +1,21 @@
 <div>
-    <h1>{{device.description}}</h1>
-
+    <h2>{{device.description}}</h2>
     <p class="lead">{{device.id}}</p>
 
+    <div class="row">
+        <div class="col-md-5">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">from</span>
+                    <input type="date" class="input-sm form-control" name="start" ng-model="fromDate" required/>
+                    <span class="input-group-addon">to</span>
+                    <input type="date" class="input-sm form-control" name="end" ng-model="toDate" required/>
+                </div>
+            </div>
+            <button ng-click="onChangeDate()" class="btn btn-primary">Get tracks</button>
+        </div>
+    </div>
+
     <div id="map"></div>
+
 </div>

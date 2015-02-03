@@ -65,57 +65,81 @@ carcloudApp.controller('DeviceListController',
                            };
                        });
 
-carcloudApp.controller('DeviceController', function ($scope, resolvedDevice) {
+carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDevice) {
 
     $scope.device = resolvedDevice;
 
-    var mapOptions = {
-        zoom: 8
+    $scope.onChangeDate = function() {
+        var dateFormat = 'yyyy-MM-dd';
+        var fromDate = $filter('date')($scope.fromDate, dateFormat);
+        var toDate = $filter('date')($scope.toDate, dateFormat);
+
+        resolvedDevice.resource("tracks").query({
+            'fromDate': fromDate,
+            'toDate': toDate
+        }).$promise.then(function(tracks) {
+            resolvedDevice.tracks = tracks;
+                addMarkers();
+            });
     };
 
-    $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    var addMarkers = function() {
 
-    $scope.markers = [];
+        var polyLineCoordinates = [];
+        var mapOptions = {
+            zoom: 8,
+            center: new google.maps.LatLng(53, -8)
+        };
 
-    var polyLineCoordinates = [];
+        $scope.markers = [];
+        $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        var infoWindow = new google.maps.InfoWindow({maxWidth: 350});
 
-    var infoWindow = new google.maps.InfoWindow({maxWidth: 300});
+        if(resolvedDevice.tracks.length > 0) {
 
-    var createMarker = function (track){
+            var createMarker = function (track){
+                var marker = new google.maps.Marker({
+                    map: $scope.map,
+                    position: new google.maps.LatLng(track.latitude, track.longitude),
+                    title: 'Track ' + track.id
+                });
+                polyLineCoordinates.push(marker.position);
 
-        var marker = new google.maps.Marker({
-            map: $scope.map,
-            position: new google.maps.LatLng(track.latitude, track.longitude),
-            title: 'Track ' + track.id
-        });
-        polyLineCoordinates.push(marker.position);
+                if(track.fields.length > 0) {
+                    marker.content = '<div class="infoWindowContent">' + track + '<table><tr><th>Name</th><th>Value</th></tr>';
 
-        marker.content = '<div class="infoWindowContent"><table><tr><th>Name</th><th>Value</th></tr>';
+                    angular.forEach(track.fields, function (field) {
+                        marker.content = marker.content + '<tr><td>' + field.name + '</td><td>' + field.value + '</td></tr>';
+                    });
 
-        angular.forEach(track.fields, function(field) {
-           marker.content = marker.content + '<tr><td>' + field.name + '</td><td>' + field.value +'</td></tr>';
-        });
+                    marker.content = marker.content + '</table></div>';
 
-        marker.content = marker.content + '</table></div>';
-        google.maps.event.addListener(marker, 'click', function(){
-            infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
-            infoWindow.open($scope.map, marker);
-        });
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
+                        infoWindow.open($scope.map, marker);
+                    });
+                }
 
-        $scope.markers.push(marker);
+                $scope.markers.push(marker);
+
+            };
+
+            angular.forEach(resolvedDevice.tracks, function (track) {
+                createMarker(track);
+            });
+
+            $scope.map.setCenter($scope.markers[Math.round(($scope.markers.length - 1) / 2)].position);
+
+            var path = new google.maps.Polyline({
+                path: polyLineCoordinates
+            });
+            path.setMap($scope.map);
+        }
+
 
     };
 
-    angular.forEach(resolvedDevice.tracks, function (track) {
-        createMarker(track);
-    });
-
-    $scope.map.setCenter($scope.markers[Math.round(($scope.markers.length - 1) / 2)].position);
-
-    var path = new google.maps.Polyline({
-       path: polyLineCoordinates
-    });
-    path.setMap($scope.map);
+    addMarkers();
 
     $scope.openInfoWindow = function(e, selectedMarker){
         e.preventDefault();
