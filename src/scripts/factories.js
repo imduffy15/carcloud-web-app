@@ -192,8 +192,7 @@ carcloudApp.factory('AuthenticationService',
                         authenticationService.valid = function (authorities) {
                             if(!$rootScope.isAuthorized(authorities)) {
                                 event.preventDefault();
-                                console.log("broadcasting error");
-                                //$rootScope.$broadcast("event:auth-notAuthorized");
+                                $rootScope.$broadcast("event:auth-notAuthorized");
                             }
                         };
 
