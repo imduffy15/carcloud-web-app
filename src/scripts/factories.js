@@ -111,135 +111,131 @@ carcloudApp.factory('Token', function (localStorageService) {
 });
 
 carcloudApp.factory('AuthenticationService',
-                    function ($base64, $http, $rootScope, Account, authService, API_DETAILS,
-                              Session, Token) {
-                        var authenticationService = {};
+    function ($base64, $http, $rootScope, Account, authService, API_DETAILS,
+              Session, Token) {
+        var authenticationService = {};
 
-                        var request = {
-                            'grant_type': API_DETAILS.grantType,
-                            'scope': API_DETAILS.scope,
-                            'client_secret': API_DETAILS.clientSecret,
-                            'client_id': API_DETAILS.clientId
-                        };
+        var request = {
+            'grant_type': API_DETAILS.grantType,
+            'scope': API_DETAILS.scope,
+            'client_secret': API_DETAILS.clientSecret,
+            'client_id': API_DETAILS.clientId
+        };
 
-                        var authenticationSuccess = function (data, status, headers, configata) {
-                            Token.set(data);
+        var authenticationSuccess = function (data, status, headers, configata) {
+            Token.set(data);
 
-                            Account.get().$promise.then(
-                                function (account) {
-                                    console.log('getting account success');
-                                    account.resource("authorities").query().$promise.then(
-                                        function (authorities) {
-                                            console.log("getting authorities success");
-                                            Session.set(
-                                                account.username,
-                                                account.firstName,
-                                                account.lastName,
-                                                account.email,
-                                                authorities
-                                            );
-                                            authService.loginConfirmed(null, function (config) {
-                                                config.headers.Authorization =
-                                                "Bearer " + Token.get().accessToken;
-                                                console.log(config);
-                                                return config;
-                                            });
-                                        },
-                                        function (data, status, headers, config) {
-                                            console.log("issue getting authorities");
-                                            authenticationError(data, status, headers, config)
-                                        }
-                                    );
-                                },
-                                function (data, status, headers, config) {
-                                    console.log("issue getting account");
-                                    authenticationError(data, status, headers, config)
-                                }
-                            )
-                        };
+            Account.get().$promise.then(
+                function (account) {
+                    console.log('getting account success');
+                    account.resource("authorities").query().$promise.then(
+                        function (authorities) {
+                            console.log("getting authorities success");
+                            Session.set(
+                                account.username,
+                                account.firstName,
+                                account.lastName,
+                                account.email,
+                                authorities
+                            );
+                            authService.loginConfirmed(null, function (config) {
+                                config.headers.Authorization =
+                                    "Bearer " + Token.get().accessToken;
+                                console.log(config);
+                                return config;
+                            });
+                        },
+                        function (data, status, headers, config) {
+                            console.log("issue getting authorities");
+                            authenticationError(data, status, headers, config)
+                        }
+                    );
+                },
+                function (data, status, headers, config) {
+                    console.log("issue getting account");
+                    authenticationError(data, status, headers, config)
+                }
+            )
+        };
 
-                        var authenticationError = function (data, status, headers, config) {
-                            Token.invalidate();
-                            Session.invalidate();
-                        };
+        var authenticationError = function (data, status, headers, config) {
+            Token.invalidate();
+            Session.invalidate();
+        };
 
-                        authenticationService.login = function (credentials) {
-                            var loginRequest = {};
-                            angular.extend(loginRequest, credentials);
-                            angular.extend(loginRequest, request);
+        authenticationService.login = function (credentials) {
+            var loginRequest = {};
+            angular.extend(loginRequest, credentials);
+            angular.extend(loginRequest, request);
 
-                            loginRequest = jQuery.param(loginRequest);
-                            loginRequest = loginRequest.replace('+', '%20');
+            loginRequest = jQuery.param(loginRequest);
+            loginRequest = loginRequest.replace('+', '%20');
 
-                            $http.post(API_DETAILS.baseUrl + 'oauth/token', loginRequest, {
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                    "Authorization": "Basic " + $base64.encode(API_DETAILS.clientId
-                                                                               + ':'
-                                                                               + API_DETAILS.clientSecret)
-                                }
-                            })
-                                .success(function (data, status, headers, config) {
-                                             console.log('oauth token success');
-                                             authenticationSuccess(data, status, headers, config)
-                                         })
-                                .error(function (data, status, headers, config) {
-                                           console.log('issue on oauth token');
-                                           authenticationError(data, status, headers, config)
-                                       });
-                        };
+            $http.post(API_DETAILS.baseUrl + 'oauth/token', loginRequest, {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    "Authorization": "Basic " + $base64.encode(API_DETAILS.clientId
+                    + ':'
+                    + API_DETAILS.clientSecret)
+                }
+            })
+                .success(function (data, status, headers, config) {
+                    console.log('oauth token success');
+                    authenticationSuccess(data, status, headers, config)
+                })
+                .error(function (data, status, headers, config) {
+                    console.log('issue on oauth token');
+                    authenticationError(data, status, headers, config)
+                });
+        };
 
-                        authenticationService.valid = function (authorities) {
-                            if(!$rootScope.isAuthorized(authorities)) {
-                                event.preventDefault();
-                                $rootScope.$broadcast("event:auth-notAuthorized");
-                            }
-                        };
+        authenticationService.valid = function (authorities) {
+            if (!$rootScope.isAuthorized(authorities)) {
+                event.preventDefault();
+                $rootScope.$broadcast("event:auth-notAuthorized");
+            }
+        };
 
-                        authenticationService.isAuthorized = function(authorities) {
+        authenticationService.isAuthorized = function (authorities) {
 
-                            console.log(authorities);
+            console.log(authorities);
 
-                            if(!angular.isArray(authorities)) {
-                                if(authorities === '*') {
-                                    return true;
-                                }
-                                authorities = [authorities];
-                            }
+            if (!angular.isArray(authorities)) {
+                if (authorities === '*') {
+                    return true;
+                }
+                authorities = [authorities];
+            }
 
-                            var isAuthorized = false;
+            var isAuthorized = false;
 
-                            if($rootScope.account) {
+            angular.forEach(authorities, function (authority) {
 
-                                angular.forEach(authorities, function(authority) {
+                console.log("Authority is: " + authority);
 
-                                    console.log("Authority is: " + authority);
+                var authorized = ($rootScope.authenticated && $rootScope.account.authorities.indexOf(authority) !== -1);
 
-                                    var authorized = ($rootScope.authenticated && $rootScope.account.authorities.indexOf(authority) !== -1);
+                if (authorized || authority === '*') {
+                    isAuthorized = true;
+                }
+            });
 
-                                    if(authorized || authority === '*') {
-                                        isAuthorized = true;
-                                    }
-                                });
+            console.log("Returning: " + isAuthorized);
 
-                            }
+            return isAuthorized;
 
-                            console.log("Returning: " + isAuthorized);
+        };
 
-                            return isAuthorized;
+        authenticationService.logout = function () {
+            $rootScope.authenticated = false;
+            $rootScope.authenticationError = false;
 
-                        };
+            Token.invalidate();
+            $http.get(API_DETAILS.baseUrl + 'app/logout');
+            Session.invalidate();
+            delete httpHeaders.common['Authorization'];
+            authService.loginCancelled();
+        };
 
-                        authenticationService.logout = function () {
-                            $rootScope.authenticated = false;
-                            $rootScope.authenticationError = false;
-
-                            Token.invalidate();
-                            $http.get(API_DETAILS.baseUrl + 'app/logout');
-                            Session.invalidate();
-                            delete httpHeaders.common['Authorization'];
-                            authService.loginCancelled();
-                        };
-
-                        return authenticationService;
-                    });
+        return authenticationService;
+    });
