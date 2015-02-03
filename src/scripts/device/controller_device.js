@@ -105,20 +105,27 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
                 });
                 polyLineCoordinates.push(marker.position);
 
+                marker.content = '<div class="infoWindowContent">';
+
+                marker.content = marker.content + '<p>longitude: ' + track.longitude + '</p>';
+                marker.content = marker.content + '<p>latitude: ' + track.latitude + '</p>';
+                marker.content = marker.content + '<p>Recorded at: ' + track.recordedAt + '</p>';
+
+
                 if (track.fields.length > 0) {
-                    marker.content = '<div class="infoWindowContent">' + track + '<table><tr><th>Name</th><th>Value</th></tr>';
+                    marker.content = marker.content + '<table><tr><th>Name</th><th>Value</th></tr>';
 
                     angular.forEach(track.fields, function (field) {
                         marker.content = marker.content + '<tr><td>' + field.name + '</td><td>' + field.value + '</td></tr>';
                     });
-
-                    marker.content = marker.content + '</table></div>';
-
-                    google.maps.event.addListener(marker, 'click', function () {
-                        infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
-                        infoWindow.open($scope.map, marker);
-                    });
                 }
+
+                marker.content = marker.content + '</table></div>';
+
+                google.maps.event.addListener(marker, 'click', function () {
+                    infoWindow.setContent('<h2>' + marker.title + '</h2>' + marker.content);
+                    infoWindow.open($scope.map, marker);
+                });
 
                 $scope.markers.push(marker);
 
