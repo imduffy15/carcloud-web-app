@@ -4,21 +4,21 @@
     <p class="lead">{{device.id}}</p>
 
     <div class="row">
-            <div class="col-md-10">
-                <div class="form-group">
-                    <div class="input-group">
-                        <span class="input-group-addon">from</span>
-                        <input type="date" class="input-sm form-control" name="start" ng-model="fromDate" required/>
-                        <span class="input-group-addon">to</span>
-                        <input type="date" class="input-sm form-control" name="end" ng-model="toDate" required/>
-                    </div>
+        <div class="col-md-10">
+            <div class="form-group">
+                <div class="input-group">
+                    <span class="input-group-addon">from</span>
+                    <input type="date" class="input-sm form-control" name="start" ng-model="fromDate" required/>
+                    <span class="input-group-addon">to</span>
+                    <input type="date" class="input-sm form-control" name="end" ng-model="toDate" required/>
                 </div>
             </div>
-            <div class="col-md-2">
-                <button ng-click="onChangeDate()" class="btn btn-primary btn-block">Get tracks</button>
-            </div>
+        </div>
+        <div class="col-md-2">
+            <button ng-click="onChangeDate()" class="btn btn-primary btn-block">Get tracks</button>
         </div>
     </div>
-    <p></p>
-    <div id="map"></div>
+</div>
+<p></p>
+<div id="map"></div>
 </div>

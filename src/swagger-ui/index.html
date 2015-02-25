@@ -47,33 +47,33 @@
             var apiUrl = "http://localhost:8080";
             if (window.location.pathname.indexOf('/swagger-ui/index.html') > 0) {
                 apiUrl +=
-                window.location.pathname.substring(0,
-                                                   window.location.pathname.indexOf('/swagger-ui/index.html'))
+                    window.location.pathname.substring(0,
+                        window.location.pathname.indexOf('/swagger-ui/index.html'))
             }
             apiUrl += "/api-docs";
             log('API URL: ' + apiUrl);
             window.swaggerUi = new SwaggerUi({
-                                                 url: apiUrl,
-                                                 dom_id: "swagger-ui-container",
-                                                 supportedSubmitMethods: ['get', 'post', 'put',
-                                                                          'delete'],
-                                                 onComplete: function (swaggerApi, swaggerUi) {
-                                                     log("Loaded SwaggerUI");
+                url: apiUrl,
+                dom_id: "swagger-ui-container",
+                supportedSubmitMethods: ['get', 'post', 'put',
+                    'delete'],
+                onComplete: function (swaggerApi, swaggerUi) {
+                    log("Loaded SwaggerUI");
 
-                                                     $('pre code').each(function (i, e) {
-                                                         hljs.highlightBlock(e)
-                                                     });
-                                                 },
-                                                 onFailure: function (data) {
-                                                     log("Unable to Load SwaggerUI");
-                                                 },
-                                                 docExpansion: "none"
-                                             });
+                    $('pre code').each(function (i, e) {
+                        hljs.highlightBlock(e)
+                    });
+                },
+                onFailure: function (data) {
+                    log("Unable to Load SwaggerUI");
+                },
+                docExpansion: "none"
+            });
 
             var authToken = JSON.parse(localStorage.getItem("CarCloud.token")).accessToken;
             window.authorizations.add("key", new ApiKeyAuthorization("Authorization",
-                                                                     "Bearer " + authToken,
-                                                                     "header"));
+                "Bearer " + authToken,
+                "header"));
             window.swaggerUi.load();
         });
     </script>

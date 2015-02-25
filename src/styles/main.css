@@ -97,14 +97,16 @@ ul#strength {
     display: none !important;
 }
 
-.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
-
-#map {
-    height:600px;
-    width:100%;
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
 }
 
-.infoWindowContent table{
-    width:100%;
-    table-layout:fixed;
+#map {
+    height: 600px;
+    width: 100%;
+}
+
+.infoWindowContent table {
+    width: 100%;
+    table-layout: fixed;
 }
