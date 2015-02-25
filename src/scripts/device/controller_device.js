@@ -104,12 +104,11 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
                     title: 'Track ' + track.id
                 });
                 polyLineCoordinates.push(marker.position);
-
                 marker.content = '<div class="infoWindowContent">';
 
                 marker.content = marker.content + '<p>longitude: ' + track.longitude + '</p>';
                 marker.content = marker.content + '<p>latitude: ' + track.latitude + '</p>';
-                marker.content = marker.content + '<p>Recorded at: ' + track.recordedAt + '</p>';
+                marker.content = marker.content + '<p>Recorded at: ' + new Date(track.recordedAt) + '</p>';
 
 
                 if (track.fields.length > 0) {
