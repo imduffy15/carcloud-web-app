@@ -4,13 +4,12 @@
 var httpHeaders;
 
 var carcloudApp = angular.module('carcloudApp', ['http-auth-interceptor', 'ngResource', 'ngRoute',
-    'ngCookies', 'hateoas', 'angular-loading-bar',
-    'ngAnimate', 'LocalStorageModule', 'base64',
-    'ui.bootstrap']);
+    'ngCookies', 'hateoas', 'angular-loading-bar', 'ngAnimate', 'LocalStorageModule', 'base64', 'ui.bootstrap'
+]);
 
 carcloudApp
     .config(function ($routeProvider, $httpProvider, $sceDelegateProvider, cfpLoadingBarProvider,
-                      localStorageServiceProvider, HateoasInterceptorProvider, USER_ROLES) {
+                      localStorageServiceProvider, HateoasInterceptorProvider, API_DETAILS, USER_ROLES) {
         $routeProvider
             .when('/register', {
                 templateUrl: 'templates/register.html',

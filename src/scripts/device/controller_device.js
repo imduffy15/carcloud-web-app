@@ -65,9 +65,16 @@ carcloudApp.controller('DeviceListController',
         };
     });
 
-carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDevice) {
+carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDevice, WebSocket, API_DETAILS) {
 
     $scope.device = resolvedDevice;
+
+    WebSocket.init(API_DETAILS.baseUrl + 'ws');
+    WebSocket.connect(function(frame) {
+        WebSocket.subscribe("/topic/device/" + resolvedDevice.id, function(message) {
+            console.log(JSON.parse(message.body));
+        });
+    });
 
     $scope.onChangeDate = function () {
         var dateFormat = 'yyyy-MM-dd';
