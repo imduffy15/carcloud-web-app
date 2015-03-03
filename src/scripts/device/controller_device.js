@@ -134,6 +134,10 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
     };
 
     var initializeMarkers = function() {
+        angular.forEach(markers, function(marker) {
+           marker.setMap(null);
+        });
+        markers = [];
         angular.forEach(resolvedDevice.tracks, function(track) {
             addTrack(track);
         });
