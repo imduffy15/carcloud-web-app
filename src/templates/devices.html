@@ -19,8 +19,11 @@
                     <a href="#/device/{{device.id}}" class="btn btn-primary">
                         <span class="ion-eye"></span> View
                     </a>
+                    <a href="#/device/{{device.id}}/alerts" class="btn btn-warning">
+                        <span class="ion-alert"></span> Alerts
+                    </a>
                     <a ng-click="openEditDeviceModal(device.id)"
-                       class="btn btn-warning">
+                       class="btn btn-success">
                         <span class="ion-edit"></span> Edit
                     </a>
                     <a ng-click="openOwnersDeviceModal(device.id)" class="btn btn-info">

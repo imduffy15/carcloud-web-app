@@ -47,4 +47,27 @@ carcloudApp
                     authorities: [USER_ROLES.all]
                 }
             })
+            .when('/device/:id/alerts', {
+                templateUrl: 'templates/device-alerts.html',
+                controller: 'DeviceAlertsController',
+                resolve: {
+                    resolvedDevice: function($route, $q, Device) {
+                        var deferred = $q.defer();
+
+                        Device.get({id: $route.current.params.id}, function(device) {
+                            device.resource("alerts").query().$promise.then(function(alerts) {
+                                device.alerts = alerts;
+                                console.log(device);
+                                console.log("from the router ^^");
+                                deferred.resolve(device);
+                            });
+                        });
+
+                        return deferred.promise;
+                    }
+                },
+                access: {
+                    authorities: [USER_ROLES.all]
+                }
+            })
     });

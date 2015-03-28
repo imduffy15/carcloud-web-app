@@ -234,6 +234,7 @@ carcloudApp.factory('AuthenticationService',
 
             init: function(url) {
                 stompClient = Stomp.over(new SockJS(url));
+                stompClient.debug = function(str) {};
             },
             connect: function(successCallback, errorCallback) {
 

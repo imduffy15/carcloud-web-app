@@ -1,0 +1,57 @@
+<form name="form" role="form" novalidate
+      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
+      ng-submit="create()">
+
+    <div class="modal-header">
+        <button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">Create a new alert criteria</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Type</label>
+            <input type="text" ng-model="criteria.type" placeholder="select value type"
+                   typeahead="type for type in types"
+                   typeahead-wait-ms="200"
+                   class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Operation</label>
+            <input type="text" ng-model="criteria.operation" placeholder="operation"
+                   typeahead="operation for operation in getOperations()"
+                   typeahead-wait-ms="200"
+                   class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label>Field name</label>
+            <input type="text" class="form-control" name="fieldName"
+                   ng-model="criteria.fieldName" ng-minlength=1 ng-maxlength=50
+                   required>
+        </div>
+
+        <div class="form-group" ng-if="criteria.type == 'string'">
+            <label>Field value</label>
+            <input type="text" class="form-control" name="fieldValue"
+                   ng-model="criteria.fieldValue" ng-minlength=1 ng-maxlength=50
+                   required>
+        </div>
+
+        <div class="form-group" ng-if="criteria.type == 'integer'">
+            <label>Field value</label>
+            <input type="number" class="form-control" name="fieldValue"
+                   ng-model="criteria.fieldValue" required>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="cancel()">
+            <span class="ion-android-cancel"></span> Cancel
+        </button>
+        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+            <span class="ion-checkmark-circled"></span> Add
+        </button>
+    </div>
+
+</form>

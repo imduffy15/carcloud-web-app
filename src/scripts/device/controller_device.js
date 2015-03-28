@@ -5,8 +5,6 @@ carcloudApp.controller('DeviceListController',
 
         $scope.devices = resolvedDevice;
 
-        $scope.selected = undefined;
-
         $scope.openAddDeviceModal = function () {
             $modal.open({
                 templateUrl: 'templates/devices-add.html',
@@ -71,8 +69,6 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
 
     $scope.device = resolvedDevice;
 
-    console.log(resolvedDevice);
-
     var markers = [];
 
     var mapOptions = {
@@ -83,10 +79,8 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
     var infoWindow = new google.maps.InfoWindow({maxWidth: 450});
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    var addTrack = function(track) {
-        if((!fromDate && !toDate) || track.recordedAt >= fromDate && track.recordedAt <= toDate) {
-
-            console.log("Adding track");
+    var addTrack = function (track) {
+        if ((!fromDate && !toDate) || track.recordedAt >= fromDate && track.recordedAt <= toDate) {
 
             var marker = new google.maps.Marker({
                 map: map,
@@ -105,12 +99,12 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
         }
     };
 
-    var generateTrackMarkerContent = function(track) {
+    var generateTrackMarkerContent = function (track) {
         var content = '<div class="infoWindowContent">';
         content = content + '<p>longitude: ' + track.longitude + '</p>';
         content = content + '<p>latitude: ' + track.latitude + '</p>';
         content = content + '<p>Recorded at: ' + new Date(track.recordedAt) + '</p>';
-        if(track.fields.length > 0) {
+        if (track.fields.length > 0) {
             content = content + '<table><tr><th>Name</th><th>Value</th></tr>';
             angular.forEach(track.fields, function (field) {
                 content = content + '<tr><td>' + field.name + '</td><td>' + field.value + '</td></tr>';
@@ -133,16 +127,16 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
             });
     };
 
-    var initializeMarkers = function() {
-        angular.forEach(markers, function(marker) {
-           marker.setMap(null);
+    var initializeMarkers = function () {
+        angular.forEach(markers, function (marker) {
+            marker.setMap(null);
         });
         markers = [];
-        angular.forEach(resolvedDevice.tracks, function(track) {
+        angular.forEach(resolvedDevice.tracks, function (track) {
             addTrack(track);
         });
         var middle = markers[Math.round((markers.length - 1) / 2)];
-        if(middle) {
+        if (middle) {
             map.setCenter(middle.position);
             map.setZoom(8);
         }
@@ -151,9 +145,11 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
     initializeMarkers();
 
     WebSocket.init(API_DETAILS.baseUrl + 'ws');
-    WebSocket.connect(function(frame) {
-        WebSocket.subscribe("/topic/device/" + resolvedDevice.id, function(message) {
+    WebSocket.connect(function (frame) {
+        WebSocket.subscribe("/topic/device/" + resolvedDevice.id, function (message) {
             addTrack(JSON.parse(message.body));
+            map.setCenter(markers[markers.length - 1].position);
+            map.setZoom(8);
         });
     });
 
@@ -243,4 +239,111 @@ carcloudApp.controller('DeviceOwnersController',
                 delete $scope.device.owners[username];
             });
         }
+    });
+
+carcloudApp.controller('DeviceAlertsController',
+    function ($scope, $modal, resolvedDevice) {
+        $scope.device = resolvedDevice;
+
+
+        $scope.openAddAlertModal = function () {
+            $modal.open({
+                templateUrl: 'templates/device-alerts-add.html',
+                controller: 'DeviceAlertsAddController',
+                resolve: {
+                    $parentScope: function () {
+                        return $scope;
+                    },
+                    data: function() {
+                        return undefined;
+                    }
+                }
+            });
+        };
+
+    });
+
+carcloudApp.controller('DeviceAlertsAddController',
+    function ($scope, $parentScope, $modal, $modalInstance, Device, data) {
+
+        $scope.alert = data || {'criteria': []};
+
+        $scope.create = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+
+        $scope.openAddCriteriaAlertModal = function () {
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-add-criteria.html',
+                controller: 'DeviceAlertsAddCriteriaController',
+                resolve: {
+                    $parentScope: function () {
+                        return $scope;
+                    },
+                    $grandParentScope: function() {
+                        return $parentScope;
+                    }
+                }
+            });
+        };
+
+    });
+
+carcloudApp.controller('DeviceAlertsAddCriteriaController',
+    function ($scope, $grandParentScope, $parentScope, $modal, $modalInstance) {
+
+
+        $scope.criteria = {
+            'type': 'string',
+            'operation': 'EQUALSTO'
+        };
+
+        $scope.types = ['string', 'boolean', 'integer'];
+
+        $scope.getOperations = function() {
+            var operations = {
+                'string': ['EQUALSTO'],
+                'boolean': ['EQUALSTO'],
+                'integer': ['EQUALSTO', 'LESSTHAN', 'LESSTHANANDEQUALSTO', 'GREATERTHAN', 'GREATERTHANANDEQUALSTO']
+            };
+            return operations[$scope.criteria.type]
+        };
+
+        $scope.create = function () {
+            $parentScope.alert.criteria.push($scope.criteria);
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-add.html',
+                controller: 'DeviceAlertsAddController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function() {
+                        return $grandParentScope
+                    }
+                }
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-add.html',
+                controller: 'DeviceAlertsAddController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function() {
+                        return $grandParentScope
+                    }
+                }
+            });
+        };
     });

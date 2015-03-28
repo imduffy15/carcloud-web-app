@@ -110,3 +110,7 @@ ul#strength {
     width: 100%;
     table-layout: fixed;
 }
+
+.bootstrap-select {
+    display: block !important;
+}
