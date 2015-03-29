@@ -1,6 +1,5 @@
 <form name="form" role="form" novalidate
-      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength"
-      ng-submit="create()">
+      class="ng-scope ng-invalid ng-invalid-required ng-dirty ng-valid-minlength">
 
     <div class="modal-header">
         <button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>
@@ -27,7 +26,7 @@
         </div>
 
         <div class="form-group">
-            <label>Criteria</label>
+            <label>Alert Fields</label>
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -38,21 +37,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="criteria in alert.criteria" class="animate">
-                    <td>{{criteria.type}}</td>
-                    <td>{{criteria.operation}}</td>
-                    <td>{{criteria.fieldName}}</td>
-                    <td>{{criteria.fieldValue}}</td>
+                <tr ng-repeat="alertField in alert.alertFields" class="animate">
+                    <td>{{alertField.field.type}}</td>
+                    <td>{{alertField.operation}}</td>
+                    <td>{{alertField.field.name}}</td>
+                    <td>{{alertField.field.value}}</td>
                 </tr>
-                <tr ng-cloak ng-hide="alert.criteria.length">
-                    <td colspan="4">No criteria set.</td>
+                <tr ng-cloak ng-hide="alert.alertFields.length">
+                    <td colspan="4">No alert fields set.</td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
         <button class="btn btn-primary" ng-click="openAddCriteriaAlertModal()">
-            <span class="ion-android-add-circle"></span> Add a new criteria
+            <span class="ion-android-add-circle"></span> Add a new alert field
         </button>
 
     </div>
@@ -61,7 +60,7 @@
         <button type="button" class="btn btn-default" ng-click="cancel()">
             <span class="ion-android-cancel"></span> Cancel
         </button>
-        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary">
+        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" ng-click="create()">
             <span class="ion-checkmark-circled"></span> Save
         </button>
     </div>

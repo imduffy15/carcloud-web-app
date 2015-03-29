@@ -4,13 +4,13 @@
 
     <div class="modal-header">
         <button type="button" class="close" aria-hidden="true" ng-click="cancel()">&times;</button>
-        <h4 class="modal-title">Create a new alert criteria</h4>
+        <h4 class="modal-title">Create a new alert field</h4>
     </div>
 
     <div class="modal-body">
         <div class="form-group">
             <label>Type</label>
-            <input type="text" ng-model="criteria.type" placeholder="select value type"
+            <input type="text" ng-model="alertField.field.type" placeholder="select value type"
                    typeahead="type for type in types"
                    typeahead-wait-ms="200"
                    class="form-control">
@@ -18,7 +18,7 @@
 
         <div class="form-group">
             <label>Operation</label>
-            <input type="text" ng-model="criteria.operation" placeholder="operation"
+            <input type="text" ng-model="alertField.operation" placeholder="operation"
                    typeahead="operation for operation in getOperations()"
                    typeahead-wait-ms="200"
                    class="form-control">
@@ -27,21 +27,21 @@
         <div class="form-group">
             <label>Field name</label>
             <input type="text" class="form-control" name="fieldName"
-                   ng-model="criteria.fieldName" ng-minlength=1 ng-maxlength=50
+                   ng-model="alertField.field.name" ng-minlength=1 ng-maxlength=50
                    required>
         </div>
 
-        <div class="form-group" ng-if="criteria.type == 'string'">
+        <div class="form-group" ng-if="alertField.field.type == 'string'">
             <label>Field value</label>
             <input type="text" class="form-control" name="fieldValue"
-                   ng-model="criteria.fieldValue" ng-minlength=1 ng-maxlength=50
+                   ng-model="alertField.field.value" ng-minlength=1 ng-maxlength=50
                    required>
         </div>
 
-        <div class="form-group" ng-if="criteria.type == 'integer'">
+        <div class="form-group" ng-if="alertField.field.type == 'integer'">
             <label>Field value</label>
             <input type="number" class="form-control" name="fieldValue"
-                   ng-model="criteria.fieldValue" required>
+                   ng-model="alertField.field.value" required>
         </div>
     </div>
 

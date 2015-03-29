@@ -5,8 +5,7 @@
 carcloudApp.controller('MainController', function ($scope) {
 
     $scope.isEmpty = function (obj) {
-        //for (var i in obj) if (obj.hasOwnProperty(i)) return false;
-        //console.log("returning true");
+        for (var i in obj) if (obj.hasOwnProperty(i)) return false;
         return true;
     };
 

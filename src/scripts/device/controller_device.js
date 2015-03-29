@@ -266,20 +266,36 @@ carcloudApp.controller('DeviceAlertsController',
 carcloudApp.controller('DeviceAlertsAddController',
     function ($scope, $parentScope, $modal, $modalInstance, Device, data) {
 
-        $scope.alert = data || {'criteria': []};
+        $scope.alert = data || {'alertFields': []};
 
         $scope.create = function () {
-            $modalInstance.dismiss('cancel');
+
+            console.log($scope.alert);
+            console.log($parentScope.device);
+
+            var fields = $scope.alert.alertFields;
+            delete $scope.alert.alertFields;
+
+            $parentScope.device.resource("alerts").save($scope.alert, function(alert) {
+                angular.forEach(fields, function(field) {
+                    alert.resource("fields").save(field, function(fields) {
+                        console.log("success");
+                    });
+                });
+            });
         };
 
         $scope.cancel = function () {
+
+            console.log("CANCELING AN ALERT");
+
             $modalInstance.dismiss('cancel');
         };
 
         $scope.openAddCriteriaAlertModal = function () {
-            $modalInstance.dismiss();
+            $modalInstance.dismiss('cancel');
             $modal.open({
-                templateUrl: 'templates/device-alerts-add-criteria.html',
+                templateUrl: 'templates/device-alerts-add-alert-field.html',
                 controller: 'DeviceAlertsAddCriteriaController',
                 resolve: {
                     $parentScope: function () {
@@ -298,8 +314,10 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
     function ($scope, $grandParentScope, $parentScope, $modal, $modalInstance) {
 
 
-        $scope.criteria = {
-            'type': 'string',
+        $scope.alertField = {
+            'field': {
+                'type': 'string'
+            },
             'operation': 'EQUALSTO'
         };
 
@@ -311,11 +329,12 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
                 'boolean': ['EQUALSTO'],
                 'integer': ['EQUALSTO', 'LESSTHAN', 'LESSTHANANDEQUALSTO', 'GREATERTHAN', 'GREATERTHANANDEQUALSTO']
             };
-            return operations[$scope.criteria.type]
+            return operations[$scope.alertField.field.type]
         };
 
         $scope.create = function () {
-            $parentScope.alert.criteria.push($scope.criteria);
+            console.log($parentScope.alert);
+            $parentScope.alert.alertFields.push($scope.alertField);
             $modalInstance.dismiss();
             $modal.open({
                 templateUrl: 'templates/device-alerts-add.html',
