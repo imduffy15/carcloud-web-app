@@ -76,7 +76,7 @@ carcloudApp.controller('RegisterController', function ($scope, Account) {
                 },
                 function (httpResponse) {
                     $scope.success = null;
-                    if (httpResponse.status === 304) {
+                    if (httpResponse.status === 409) {
                         $scope.error = null;
                         $scope.errorUserExists = "ERROR";
                     } else {

@@ -114,3 +114,7 @@ ul#strength {
 .bootstrap-select {
     display: block !important;
 }
+
+.intl-tel-input {
+     display: block !important;
+}

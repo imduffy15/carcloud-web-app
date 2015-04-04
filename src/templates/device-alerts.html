@@ -28,7 +28,7 @@
                     </a>
                 </td>
             </tr>
-            <tr ng-cloak ng-show="device.alerts.length <= 0">
+            <tr ng-cloak ng-hide="device.alerts.length">
                 <td colspan="3">No alerts found.</td>
             </tr>
             </tbody>

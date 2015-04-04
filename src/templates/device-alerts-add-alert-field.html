@@ -27,14 +27,14 @@
         <div class="form-group">
             <label>Field name</label>
             <input type="text" class="form-control" name="fieldName"
-                   ng-model="alertField.field.name" ng-minlength=1 ng-maxlength=50
+                   ng-model="alertField.field.name" ng-minlength=1 ng-maxlength=150
                    required>
         </div>
 
         <div class="form-group" ng-if="alertField.field.type == 'string'">
             <label>Field value</label>
             <input type="text" class="form-control" name="fieldValue"
-                   ng-model="alertField.field.value" ng-minlength=1 ng-maxlength=50
+                   ng-model="alertField.field.value" ng-minlength=1 ng-maxlength=150
                    required>
         </div>
 
@@ -42,6 +42,18 @@
             <label>Field value</label>
             <input type="number" class="form-control" name="fieldValue"
                    ng-model="alertField.field.value" required>
+        </div>
+
+        <div class="form-group" ng-if="alertField.field.type == 'boolean'">
+            <label>Field value</label>
+            <div>
+                <label class="radio-inline">
+                    <input type="radio" ng-model="alertField.field.value" name="fieldValue" value="true"> true
+                </label>
+                <label class="radio-inline">
+                    <input type="radio" ng-model="alertField.field.value" name="fieldValue" value="false"> false
+                </label>
+            </div>
         </div>
     </div>
 

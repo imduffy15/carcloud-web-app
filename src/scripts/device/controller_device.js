@@ -271,20 +271,19 @@ carcloudApp.controller('DeviceAlertsController',
 carcloudApp.controller('DeviceAlertsAddController',
     function ($scope, $parentScope, $modal, $modalInstance, Device, data) {
 
-        $scope.alert = data || {'alertFields': []};
+        $scope.alert = data || {'fields': []};
+        $scope.isSaving = false;
 
         $scope.create = function () {
+            $scope.isSaving = true;
+            var fields = $scope.alert.fields;
+            var alert = $scope.alert;
 
-            var fields = $scope.alert.alertFields;
-            delete $scope.alert.alertFields;
-
-            $parentScope.device.resource("alerts").save($scope.alert, function (alert) {
-                angular.forEach(fields, function (field) {
-                    alert.resource("fields").save(field, function (fields) {
-                        console.log("success");
-                    });
-                });
-            });
+            $parentScope.device.resource("alerts").save(alert, function (alert) {
+                    $parentScope.device.alerts.push(alert);
+                    $modalInstance.close();
+                }
+            );
         };
 
         $scope.cancel = function () {
@@ -336,7 +335,7 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
 
         $scope.create = function () {
             console.log($parentScope.alert);
-            $parentScope.alert.alertFields.push($scope.alertField);
+            $parentScope.alert.fields.push($scope.alertField);
             $modalInstance.dismiss();
             $modal.open({
                 templateUrl: 'templates/device-alerts-add.html',

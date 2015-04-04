@@ -10,14 +10,14 @@
     <div class="modal-body">
         <div class="form-group">
             <label>ID</label>
-            <input type="text" class="form-control" name="id"
+            <input type="number" class="form-control" name="id"
                    ng-model="device.id" required>
         </div>
 
         <div class="form-group">
             <label>Description</label>
             <input type="text" class="form-control" name="description"
-                   ng-model="device.description" ng-minlength=1 ng-maxlength=50
+                   ng-model="device.description" ng-minlength=1 ng-maxlength=150
                    required>
         </div>
     </div>

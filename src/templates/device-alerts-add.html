@@ -10,7 +10,7 @@
         <div class="form-group">
             <label>Description</label>
             <input type="text" class="form-control" name="description"
-                   ng-model="alert.description" ng-minlength=1 ng-maxlength=50
+                   ng-model="alert.description" ng-minlength=1 ng-maxlength=150
                    required>
         </div>
 
@@ -37,13 +37,13 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="alertField in alert.alertFields" class="animate">
+                <tr ng-repeat="alertField in alert.fields" class="animate">
                     <td>{{alertField.field.type}}</td>
                     <td>{{alertField.operation}}</td>
                     <td>{{alertField.field.name}}</td>
                     <td>{{alertField.field.value}}</td>
                 </tr>
-                <tr ng-cloak ng-hide="alert.alertFields.length">
+                <tr ng-cloak ng-hide="alert.fields.length">
                     <td colspan="4">No alert fields set.</td>
                 </tr>
                 </tbody>
@@ -60,7 +60,7 @@
         <button type="button" class="btn btn-default" ng-click="cancel()">
             <span class="ion-android-cancel"></span> Cancel
         </button>
-        <button type="submit" ng-disabled="form.$invalid" class="btn btn-primary" ng-click="create()">
+        <button type="submit" ng-disabled="form.$invalid || isSaving" class="btn btn-primary" ng-click="create()">
             <span class="ion-checkmark-circled"></span> Save
         </button>
     </div>

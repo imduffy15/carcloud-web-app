@@ -74,22 +74,18 @@
 
         <div class="form-group">
             <label>Phone</label>
-            <input type="text" class="form-control" name="phone"
-                   placeholder="Phone number"
-                   ng-model="registerAccount.phone" ng-minlength=10 ng-maxlength=100
+            <input type="tel" class="form-control" name="phone"
+                   international-phone-number preferred-countries="ie, gb"
+                   ng-model="registerAccount.phone"
                    required>
 
             <div class="error" ng-cloak ng-show="form.phone.$dirty && form.phone.$invalid">
-                <small class="error" ng-cloak ng-show="form.email.$error.required">
+                <small class="error" ng-cloak ng-show="form.phone.$error.required">
                     Your phone number is required.
                 </small>
 
-                <small class="error" ng-cloak ng-show="form.phone.$error.minlength">
-                    Your phone number is required to be at least 10 characters
-                </small>
-
-                <small class="error" ng-cloak ng-show="form.phone.$error.maxlength">
-                    Your phone number cannot be longer than 100 characters
+                <small class="error" ng-cloak ng-show="form.phone.$error.phoneNumber">
+                    Your phone number is invalid.
                 </small>
             </div>
         </div>
@@ -148,7 +144,7 @@
             Register
         </button>
     </form>
-
+    <p></p>
     <div class="alert alert-warning">
         If you want to <a href="#/login">authenticate</a>, you can try the default
         email="admin@carcloud.iandufy.ie" and
