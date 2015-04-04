@@ -293,6 +293,11 @@ carcloudApp.controller('DeviceAlertsAddController',
             $modalInstance.dismiss('cancel');
         };
 
+
+        $scope.delete = function(index) {
+          $scope.alert.fields.splice(index, 1);
+        };
+
         $scope.openAddCriteriaAlertModal = function () {
             $modalInstance.dismiss('cancel');
             $modal.open({

@@ -34,6 +34,7 @@
                     <th>Operation</th>
                     <th>Field Name</th>
                     <th>Field Value</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -42,9 +43,15 @@
                     <td>{{alertField.operation}}</td>
                     <td>{{alertField.field.name}}</td>
                     <td>{{alertField.field.value}}</td>
+                    <td>
+                        <a ng-click="delete($index)"
+                           class="btn btn-danger">
+                            <span class="ion-trash-b"></span> Delete
+                        </a>
+                    </td>
                 </tr>
                 <tr ng-cloak ng-hide="alert.fields.length">
-                    <td colspan="4">No alert fields set.</td>
+                    <td colspan="5">No alert fields set.</td>
                 </tr>
                 </tbody>
             </table>
