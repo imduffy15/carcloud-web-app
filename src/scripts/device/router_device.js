@@ -35,9 +35,9 @@ carcloudApp
 
                         Device.get({id: $route.current.params.id}, function (device) {
                             device.resource("tracks").query().$promise.then(function (tracks) {
-                                    device.tracks = tracks;
-                                    deferred.resolve(device);
-                                });
+                                device.tracks = tracks;
+                                deferred.resolve(device);
+                            });
                         });
 
                         return deferred.promise;
@@ -51,14 +51,12 @@ carcloudApp
                 templateUrl: 'templates/device-alerts.html',
                 controller: 'DeviceAlertsController',
                 resolve: {
-                    resolvedDevice: function($route, $q, Device) {
+                    resolvedDevice: function ($route, $q, Device) {
                         var deferred = $q.defer();
 
-                        Device.get({id: $route.current.params.id}, function(device) {
-                            device.resource("alerts").query().$promise.then(function(alerts) {
+                        Device.get({id: $route.current.params.id}, function (device) {
+                            device.resource("alerts").query().$promise.then(function (alerts) {
                                 device.alerts = alerts;
-                                console.log(device);
-                                console.log("from the router ^^");
                                 deferred.resolve(device);
                             });
                         });

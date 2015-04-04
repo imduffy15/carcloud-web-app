@@ -242,9 +242,8 @@ carcloudApp.controller('DeviceOwnersController',
     });
 
 carcloudApp.controller('DeviceAlertsController',
-    function ($scope, $modal, resolvedDevice) {
+    function ($scope, $modal, Alert, resolvedDevice) {
         $scope.device = resolvedDevice;
-
 
         $scope.openAddAlertModal = function () {
             $modal.open({
@@ -254,10 +253,16 @@ carcloudApp.controller('DeviceAlertsController',
                     $parentScope: function () {
                         return $scope;
                     },
-                    data: function() {
+                    data: function () {
                         return undefined;
                     }
                 }
+            });
+        };
+
+        $scope.delete = function (id, index) {
+            Alert.delete({id: id}, function () {
+                $scope.device.alerts.splice(index, 1);
             });
         };
 
@@ -270,15 +275,12 @@ carcloudApp.controller('DeviceAlertsAddController',
 
         $scope.create = function () {
 
-            console.log($scope.alert);
-            console.log($parentScope.device);
-
             var fields = $scope.alert.alertFields;
             delete $scope.alert.alertFields;
 
-            $parentScope.device.resource("alerts").save($scope.alert, function(alert) {
-                angular.forEach(fields, function(field) {
-                    alert.resource("fields").save(field, function(fields) {
+            $parentScope.device.resource("alerts").save($scope.alert, function (alert) {
+                angular.forEach(fields, function (field) {
+                    alert.resource("fields").save(field, function (fields) {
                         console.log("success");
                     });
                 });
@@ -301,7 +303,7 @@ carcloudApp.controller('DeviceAlertsAddController',
                     $parentScope: function () {
                         return $scope;
                     },
-                    $grandParentScope: function() {
+                    $grandParentScope: function () {
                         return $parentScope;
                     }
                 }
@@ -323,7 +325,7 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
 
         $scope.types = ['string', 'boolean', 'integer'];
 
-        $scope.getOperations = function() {
+        $scope.getOperations = function () {
             var operations = {
                 'string': ['EQUALSTO'],
                 'boolean': ['EQUALSTO'],
@@ -343,7 +345,7 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
                     data: function () {
                         return $parentScope.alert;
                     },
-                    $parentScope: function() {
+                    $parentScope: function () {
                         return $grandParentScope
                     }
                 }
@@ -359,7 +361,7 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
                     data: function () {
                         return $parentScope.alert;
                     },
-                    $parentScope: function() {
+                    $parentScope: function () {
                         return $grandParentScope
                     }
                 }
