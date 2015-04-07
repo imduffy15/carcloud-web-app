@@ -260,6 +260,25 @@ carcloudApp.controller('DeviceAlertsController',
             });
         };
 
+        $scope.openEditAlertModal = function (id) {
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit.html',
+                controller: 'DeviceAlertsEditController',
+                resolve: {
+                    $parentScope: function () {
+                        return $scope;
+                    },
+                    data: function () {
+                        return Alert.get({id: id});
+                    }
+                }
+            });
+        };
+
+        $scope.edit = function(id) {
+            $scope.openEditAlertModal(id);
+        };
+
         $scope.delete = function (id, index) {
             Alert.delete({id: id}, function () {
                 $scope.device.alerts.splice(index, 1);
@@ -298,11 +317,11 @@ carcloudApp.controller('DeviceAlertsAddController',
           $scope.alert.fields.splice(index, 1);
         };
 
-        $scope.openAddCriteriaAlertModal = function () {
+        $scope.openAddFieldAlertModal = function () {
             $modalInstance.dismiss('cancel');
             $modal.open({
                 templateUrl: 'templates/device-alerts-add-alert-field.html',
-                controller: 'DeviceAlertsAddCriteriaController',
+                controller: 'DeviceAlertsAddFieldController',
                 resolve: {
                     $parentScope: function () {
                         return $scope;
@@ -316,7 +335,7 @@ carcloudApp.controller('DeviceAlertsAddController',
 
     });
 
-carcloudApp.controller('DeviceAlertsAddCriteriaController',
+carcloudApp.controller('DeviceAlertsAddFieldController',
     function ($scope, $grandParentScope, $parentScope, $modal, $modalInstance) {
 
 
@@ -371,4 +390,52 @@ carcloudApp.controller('DeviceAlertsAddCriteriaController',
                 }
             });
         };
+    });
+
+carcloudApp.controller('DeviceAlertsEditController',
+    function ($scope, $parentScope, $modal, $modalInstance, Device, data) {
+
+        $scope.alert = data || {'fields': []};
+        $scope.isSaving = false;
+
+        $scope.create = function () {
+            $scope.isSaving = true;
+            var fields = $scope.alert.fields;
+            var alert = $scope.alert;
+
+            $parentScope.device.resource("alerts").save(alert, function (alert) {
+                    $parentScope.device.alerts.push(alert);
+                    $modalInstance.close();
+                }
+            );
+        };
+
+        $scope.cancel = function () {
+
+            console.log("CANCELING AN ALERT");
+
+            $modalInstance.dismiss('cancel');
+        };
+
+
+        $scope.delete = function(index) {
+            $scope.alert.fields.splice(index, 1);
+        };
+
+        $scope.openAddFieldAlertModal = function () {
+            $modalInstance.dismiss('cancel');
+            $modal.open({
+                templateUrl: 'templates/device-alerts-add-alert-field.html',
+                controller: 'DeviceAlertsAddFieldController',
+                resolve: {
+                    $parentScope: function () {
+                        return $scope;
+                    },
+                    $grandParentScope: function () {
+                        return $parentScope;
+                    }
+                }
+            });
+        };
+
     });
