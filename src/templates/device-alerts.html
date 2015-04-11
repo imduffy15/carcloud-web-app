@@ -18,11 +18,11 @@
                 <td>{{alert.id}}</td>
                 <td>{{alert.description}}</td>
                 <td>
-                    <a ng-click="openEditAlertModal(alert.id)"
+                    <a ng-click="openEditAlertModal(alert)"
                        class="btn btn-success">
                         <span class="ion-edit"></span> Edit
                     </a>
-                    <a ng-click="delete(alert.id, $index)"
+                    <a ng-click="delete(alert, $index)"
                        class="btn btn-danger">
                         <span class="ion-trash-b"></span> Delete
                     </a>

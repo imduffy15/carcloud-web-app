@@ -242,7 +242,7 @@ carcloudApp.controller('DeviceOwnersController',
     });
 
 carcloudApp.controller('DeviceAlertsController',
-    function ($scope, $modal, Alert, resolvedDevice) {
+    function ($scope, $modal, $q, Alert, resolvedDevice) {
         $scope.device = resolvedDevice;
 
         $scope.openAddAlertModal = function () {
@@ -260,7 +260,7 @@ carcloudApp.controller('DeviceAlertsController',
             });
         };
 
-        $scope.openEditAlertModal = function (id) {
+        $scope.openEditAlertModal = function (alert) {
             $modal.open({
                 templateUrl: 'templates/device-alerts-edit.html',
                 controller: 'DeviceAlertsEditController',
@@ -269,7 +269,16 @@ carcloudApp.controller('DeviceAlertsController',
                         return $scope;
                     },
                     data: function () {
-                        return Alert.get({id: id});
+                        var deferred = $q.defer();
+
+                        alert.resource("self").get().$promise.then(function(alert) {
+                            alert.resource("fields").query().$promise.then(function(fields) {
+                                alert.fields = fields;
+                                deferred.resolve(alert);
+                            })
+                        });
+
+                        return deferred.promise;
                     }
                 }
             });
@@ -279,8 +288,8 @@ carcloudApp.controller('DeviceAlertsController',
             $scope.openEditAlertModal(id);
         };
 
-        $scope.delete = function (id, index) {
-            Alert.delete({id: id}, function () {
+        $scope.delete = function (alert, index) {
+            alert.resource("self").delete(function() {
                 $scope.device.alerts.splice(index, 1);
             });
         };
