@@ -44,6 +44,10 @@
                     <td>{{alertField.field.name}}</td>
                     <td>{{alertField.field.value}}</td>
                     <td>
+                        <a ng-click="openEditFieldAlertModal(alertField, $index)"
+                           class="btn btn-success">
+                            <span class="ion-edit"></span> Edit
+                        </a>
                         <a ng-click="delete($index)"
                            class="btn btn-danger">
                             <span class="ion-trash-b"></span> Delete
@@ -57,7 +61,7 @@
             </table>
         </div>
 
-        <button class="btn btn-primary" ng-click="openAddCriteriaAlertModal()">
+        <button class="btn btn-primary" ng-click="openAddFieldAlertModal()">
             <span class="ion-android-add-circle"></span> Add a new alert field
         </button>
 

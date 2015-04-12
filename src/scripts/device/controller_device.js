@@ -260,7 +260,7 @@ carcloudApp.controller('DeviceAlertsController',
             });
         };
 
-        $scope.openEditAlertModal = function (alert) {
+        $scope.openEditAlertModal = function (alert, alertIndex) {
             $modal.open({
                 templateUrl: 'templates/device-alerts-edit.html',
                 controller: 'DeviceAlertsEditController',
@@ -271,25 +271,25 @@ carcloudApp.controller('DeviceAlertsController',
                     data: function () {
                         var deferred = $q.defer();
 
-                        alert.resource("self").get().$promise.then(function(alert) {
-                            alert.resource("fields").query().$promise.then(function(fields) {
-                                alert.fields = fields;
-                                deferred.resolve(alert);
-                            })
+                        alert.resource("self").get().$promise.then(function (alert) {
+                            deferred.resolve(alert);
                         });
 
                         return deferred.promise;
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
                     }
                 }
             });
         };
 
-        $scope.edit = function(id) {
+        $scope.edit = function (id) {
             $scope.openEditAlertModal(id);
         };
 
         $scope.delete = function (alert, index) {
-            alert.resource("self").delete(function() {
+            alert.resource("self").delete(function () {
                 $scope.device.alerts.splice(index, 1);
             });
         };
@@ -322,8 +322,8 @@ carcloudApp.controller('DeviceAlertsAddController',
         };
 
 
-        $scope.delete = function(index) {
-          $scope.alert.fields.splice(index, 1);
+        $scope.delete = function (index) {
+            $scope.alert.fields.splice(index, 1);
         };
 
         $scope.openAddFieldAlertModal = function () {
@@ -402,7 +402,7 @@ carcloudApp.controller('DeviceAlertsAddFieldController',
     });
 
 carcloudApp.controller('DeviceAlertsEditController',
-    function ($scope, $parentScope, $modal, $modalInstance, Device, data) {
+    function ($scope, $parentScope, $modal, $modalInstance, Device, data, alertIndex) {
 
         $scope.alert = data || {'fields': []};
         $scope.isSaving = false;
@@ -412,8 +412,9 @@ carcloudApp.controller('DeviceAlertsEditController',
             var fields = $scope.alert.fields;
             var alert = $scope.alert;
 
-            $parentScope.device.resource("alerts").save(alert, function (alert) {
-                    $parentScope.device.alerts.push(alert);
+            $parentScope.device.resource("alerts").update(alert, function (alert) {
+                    $parentScope.device.alerts.splice(alertIndex, 1);
+                    $parentScope.device.alerts.splice(alertIndex, 0, alert);
                     $modalInstance.close();
                 }
             );
@@ -427,7 +428,7 @@ carcloudApp.controller('DeviceAlertsEditController',
         };
 
 
-        $scope.delete = function(index) {
+        $scope.delete = function (index) {
             $scope.alert.fields.splice(index, 1);
         };
 
@@ -435,16 +436,164 @@ carcloudApp.controller('DeviceAlertsEditController',
             $modalInstance.dismiss('cancel');
             $modal.open({
                 templateUrl: 'templates/device-alerts-add-alert-field.html',
-                controller: 'DeviceAlertsAddFieldController',
+                controller: 'DeviceAlertsEditAddFieldController',
                 resolve: {
                     $parentScope: function () {
                         return $scope;
                     },
                     $grandParentScope: function () {
                         return $parentScope;
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
                     }
                 }
             });
         };
 
+        $scope.openEditFieldAlertModal = function (alertField, fieldIndex) {
+            $modalInstance.dismiss('cancel');
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit-alert-field.html',
+                controller: 'DeviceAlertsEditFieldController',
+                resolve: {
+                    $parentScope: function () {
+                        return $scope;
+                    },
+                    $grandParentScope: function () {
+                        return $parentScope;
+                    },
+                    data: function () {
+                        return alertField;
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
+                    },
+                    fieldIndex: function () {
+                        return fieldIndex;
+                    }
+                }
+            });
+        };
+
+    });
+
+carcloudApp.controller('DeviceAlertsEditFieldController',
+    function ($scope, $grandParentScope, $parentScope, $modal, $modalInstance, data, alertIndex, fieldIndex) {
+
+        $scope.alertField = data;
+
+        $scope.types = ['string', 'boolean', 'integer'];
+
+        $scope.getOperations = function () {
+            var operations = {
+                'string': ['EQUALSTO'],
+                'boolean': ['EQUALSTO'],
+                'integer': ['EQUALSTO', 'LESSTHAN', 'LESSTHANANDEQUALSTO', 'GREATERTHAN', 'GREATERTHANANDEQUALSTO']
+            };
+            return operations[$scope.alertField.field.type]
+        };
+
+        $scope.create = function () {
+            $parentScope.alert.fields.splice(fieldIndex, 1);
+            $parentScope.alert.fields.splice(fieldIndex, 0, $scope.alertField);
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit.html',
+                controller: 'DeviceAlertsEditController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function () {
+                        return $grandParentScope
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
+                    }
+                }
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit.html',
+                controller: 'DeviceAlertsEditController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function () {
+                        return $grandParentScope
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
+                    }
+                }
+            });
+        };
+    });
+
+carcloudApp.controller('DeviceAlertsEditAddFieldController',
+    function ($scope, $grandParentScope, $parentScope, $modal, $modalInstance, alertIndex) {
+
+
+        $scope.alertField = {
+            'field': {
+                'type': 'string'
+            },
+            'operation': 'EQUALSTO'
+        };
+
+        $scope.types = ['string', 'boolean', 'integer'];
+
+        $scope.getOperations = function () {
+            var operations = {
+                'string': ['EQUALSTO'],
+                'boolean': ['EQUALSTO'],
+                'integer': ['EQUALSTO', 'LESSTHAN', 'LESSTHANANDEQUALSTO', 'GREATERTHAN', 'GREATERTHANANDEQUALSTO']
+            };
+            return operations[$scope.alertField.field.type]
+        };
+
+        $scope.create = function () {
+            console.log($parentScope.alert);
+            $parentScope.alert.fields.push($scope.alertField);
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit.html',
+                controller: 'DeviceAlertsEditController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function () {
+                        return $grandParentScope
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
+                    }
+                }
+            });
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss();
+            $modal.open({
+                templateUrl: 'templates/device-alerts-edit.html',
+                controller: 'DeviceAlertsEditController',
+                resolve: {
+                    data: function () {
+                        return $parentScope.alert;
+                    },
+                    $parentScope: function () {
+                        return $grandParentScope
+                    },
+                    alertIndex: function () {
+                        return alertIndex;
+                    }
+                }
+            });
+        };
     });

@@ -10,7 +10,7 @@ var carcloudApp = angular.module('carcloudApp', ['http-auth-interceptor', 'ngRes
 
 carcloudApp
     .config(function ($routeProvider, $httpProvider, $sceDelegateProvider, cfpLoadingBarProvider,
-                      localStorageServiceProvider, HateoasInterceptorProvider, API_DETAILS, USER_ROLES) {
+                      localStorageServiceProvider, HateoasInterceptorProvider, HateoasInterfaceProvider, API_DETAILS, USER_ROLES) {
         $routeProvider
             .when('/register', {
                 templateUrl: 'templates/register.html',
@@ -75,6 +75,13 @@ carcloudApp
             });
 
         HateoasInterceptorProvider.transformAllResponses();
+
+        HateoasInterfaceProvider.setHttpMethods({
+            update: {
+                method: "PUT"
+            }
+        });
+
         httpHeaders = $httpProvider.defaults.headers;
 
         cfpLoadingBarProvider.includeBar = true;
