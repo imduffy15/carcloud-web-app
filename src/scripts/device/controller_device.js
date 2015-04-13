@@ -177,7 +177,7 @@ carcloudApp.controller('DeviceAddController',
                     });
                     $modalInstance.close();
                 },
-                function(httpResponse) {
+                function (httpResponse) {
                     $scope.error = httpResponse.data;
                 }
             );
