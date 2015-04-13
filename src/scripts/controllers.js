@@ -18,7 +18,6 @@ carcloudApp.controller('MenuController', function ($scope) {
 });
 
 carcloudApp.controller('LoginController', function ($scope, $location, AuthenticationService) {
-    $scope.rememberMe = true;
     $scope.login = function () {
         AuthenticationService.login({
             username: $scope.username,
@@ -53,7 +52,7 @@ carcloudApp.controller('SettingsController', function ($rootScope, $scope, Accou
             },
             function (httpResponse) {
                 $scope.success = null;
-                $scope.error = "ERROR";
+                $scope.error = httpResponse.data;
             });
     };
 });
@@ -76,13 +75,7 @@ carcloudApp.controller('RegisterController', function ($scope, Account) {
                 },
                 function (httpResponse) {
                     $scope.success = null;
-                    if (httpResponse.status === 409) {
-                        $scope.error = null;
-                        $scope.errorUserExists = "ERROR";
-                    } else {
-                        $scope.error = "ERROR";
-                        $scope.errorUserExists = null;
-                    }
+                    $scope.error = httpResponse.data;
                 });
         }
     }
@@ -98,6 +91,8 @@ carcloudApp.controller('PasswordController', function ($scope, Account) {
     $scope.changePassword = function () {
         if ($scope.password != $scope.confirmPassword) {
             $scope.doNotMatch = "ERROR";
+            $scope.error = null;
+            $scope.success = null;
         } else {
             $scope.doNotMatch = null;
             Account.update({'password': $scope.password, 'version': $scope.settingsAccount.version},

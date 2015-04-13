@@ -162,9 +162,12 @@ carcloudApp.controller('DeviceController', function ($scope, $filter, resolvedDe
 
 carcloudApp.controller('DeviceAddController',
     function ($scope, $parentScope, $modalInstance, Device) {
+        $scope.error = null;
+
         $scope.create = function () {
             Device.save($scope.device,
                 function () {
+                    $scope.error = null;
                     Device.query().$promise.then(function (devices) {
                         angular.forEach(devices, function (device) {
                             if (!$parentScope.devices[device.id]) {
@@ -173,7 +176,11 @@ carcloudApp.controller('DeviceAddController',
                         });
                     });
                     $modalInstance.close();
-                });
+                },
+                function(httpResponse) {
+                    $scope.error = httpResponse.data;
+                }
+            );
         };
 
         $scope.cancel = function () {

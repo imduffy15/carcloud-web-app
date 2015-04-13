@@ -6,11 +6,7 @@
     </div>
 
     <div class="alert alert-danger" ng-cloak ng-show="error">
-        <strong>Registration failed!</strong> Please check your input and try again.
-    </div>
-
-    <div class="alert alert-danger" ng-cloak ng-show="errorUserExists">
-        <strong>Login name already registered!</strong> Please choose another one.
+        <strong>{{error.title}}:</strong> {{error.detail}}.
     </div>
 
     <div class="alert alert-danger" ng-cloak ng-show="doNotMatch">

@@ -17,8 +17,21 @@
         <div class="form-group">
             <label>Description</label>
             <input type="text" class="form-control" name="description"
-                   ng-model="device.description" ng-minlength=1 ng-maxlength=150
+                   ng-model="device.description" ng-minlength=1 ng-maxlength=100
                    required>
+
+
+            <div class="error" ng-cloak
+                 ng-show="form.description.$dirty && form.description.$invalid">
+                <small class="error" ng-cloak ng-show="form.description.$error.required">
+                    Your description is required.
+                </small>
+
+                <small class="error" ng-cloak ng-show="form.description.$error.maxlength">
+                    Your description cannot be longer than 100 characters
+                </small>
+            </div>
+
         </div>
     </div>
 

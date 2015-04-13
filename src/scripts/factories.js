@@ -124,6 +124,7 @@ carcloudApp.factory('AuthenticationService',
 
         var authenticationSuccess = function (data, status, headers, configata) {
             Token.set(data);
+            $rootScope.authenticationError = false;
 
             Account.get().$promise.then(
                 function (account) {
@@ -154,6 +155,7 @@ carcloudApp.factory('AuthenticationService',
         };
 
         var authenticationError = function (data, status, headers, config) {
+            $rootScope.authenticationError = true;
             Token.invalidate();
             Session.invalidate();
         };
@@ -175,10 +177,10 @@ carcloudApp.factory('AuthenticationService',
                 }
             })
                 .success(function (data, status, headers, config) {
-                    authenticationSuccess(data, status, headers, config)
+                    authenticationSuccess(data, status, headers, config);
                 })
                 .error(function (data, status, headers, config) {
-                    authenticationError(data, status, headers, config)
+                    authenticationError(data, status, headers, config);
                 });
         };
 
