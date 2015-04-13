@@ -193,12 +193,18 @@ carcloudApp.controller('DeviceEditController',
 
         $scope.device = resolvedDevice;
 
+        $scope.error = null
+
         $scope.update = function () {
             Device.update($scope.device,
                 function () {
+                    $scope.error = null;
                     $parentScope.devices[$scope.device.id] =
                         $scope.device;
                     $modalInstance.close();
+                },
+                function(httpResponse) {
+                    $scope.error = httpResponse.data;
                 });
         };
 

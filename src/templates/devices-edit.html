@@ -8,6 +8,12 @@
     </div>
 
     <div class="modal-body">
+
+        <div class="alert alert-danger" ng-cloak ng-show="error">
+            <strong>{{error.title}}:</strong> {{error.detail}}.
+        </div>
+
+
         <div class="form-group">
             <label>ID</label>
             <input type="text" class="form-control" name="id"

@@ -61,10 +61,11 @@ carcloudApp.controller('RegisterController', function ($scope, Account) {
     $scope.success = null;
     $scope.error = null;
     $scope.doNotMatch = null;
-    $scope.errorUserExists = null;
     $scope.register = function () {
         if ($scope.registerAccount.password != $scope.confirmPassword) {
             $scope.doNotMatch = "ERROR";
+            $scope.error = null;
+            $scope.success = null;
         } else {
             $scope.doNotMatch = null;
             Account.save($scope.registerAccount,
@@ -97,6 +98,7 @@ carcloudApp.controller('PasswordController', function ($scope, Account) {
             $scope.doNotMatch = null;
             Account.update({'password': $scope.password, 'version': $scope.settingsAccount.version},
                 function (value, responseHeaders) {
+                    $scope.settingsAccount.version = value.version;
                     $scope.error = null;
                     $scope.success = 'OK';
                 },
