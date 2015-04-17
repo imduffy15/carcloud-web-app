@@ -22,7 +22,7 @@ carcloudApp
                     }
                 },
                 access: {
-                    authorities: [USER_ROLES.all]
+                    authorities: [USER_ROLES.user]
                 }
             })
             .when('/device/:id', {
@@ -30,7 +30,6 @@ carcloudApp
                 controller: 'DeviceController',
                 resolve: {
                     resolvedDevice: function ($route, $q, Device) {
-
                         var deferred = $q.defer();
 
                         Device.get({id: $route.current.params.id}, function (device) {
@@ -44,7 +43,7 @@ carcloudApp
                     }
                 },
                 access: {
-                    authorities: [USER_ROLES.all]
+                    authorities: [USER_ROLES.user]
                 }
             })
             .when('/device/:id/alerts', {

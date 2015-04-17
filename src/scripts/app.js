@@ -63,7 +63,7 @@ carcloudApp
             .when('/docs', {
                 templateUrl: 'templates/docs.html',
                 access: {
-                    authorities: [USER_ROLES.user]
+                    authorities: [USER_ROLES.admin]
                 }
             })
             .otherwise({
@@ -136,7 +136,7 @@ carcloudApp
 
         // Call when the 403 response is returned by the server
         $rootScope.$on('event:auth-notAuthorized', function (rejection) {
-            $rootScope.errorMessage = 'errors.403';
+            $rootScope.errorMessage = 'Not authorized.';
             $location.path('/error');
         });
 
