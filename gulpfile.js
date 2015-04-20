@@ -41,7 +41,7 @@ gulp.task('copy', ['clean'], function () {
             pipe(flatten()).
             pipe(gulp.dest(yeoman.dist + 'fonts/'))
         // gulp.src(yeoman.app + 'swagger-ui/**/*', {'base': 'src/'}).
-        //     pipe(gulp.dest(yeoman.dist))
+            // pipe(gulp.dest(yeoman.dist))
     );
 });
 
@@ -85,7 +85,7 @@ gulp.task('build', ['clean', 'copy'], function () {
 });
 
 gulp.task('usemin', ['images', 'styles'], function () {
-    return gulp.src(yeoman.app + '{,templates/,swagger-ui/}*.html').
+    return gulp.src(yeoman.app + '{,templates/}*.html').
         pipe(usemin({
             css: [
                 prefix.apply(),
@@ -98,7 +98,6 @@ gulp.task('usemin', ['images', 'styles'], function () {
                 minifyHtml({empty: true, conditionals: true})
             ],
             js: [
-                //ngAnnotate(),
                 uglify({mangle: false}),
                 'concat',
                 rev()
