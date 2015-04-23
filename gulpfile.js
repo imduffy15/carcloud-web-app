@@ -36,12 +36,11 @@ gulp.task('clean:tmp', function () {
 });
 
 gulp.task('copy', ['clean'], function () {
+    gulp.src(yeoman.app + 'bower_components/intl-tel-input/**/*').pipe(gulp.dest(yeoman.dist + 'bower_components/intl-tel-input/'));
     return es.merge(
         gulp.src(yeoman.app + '**/*.{woff,svg,ttf,eot}').
             pipe(flatten()).
             pipe(gulp.dest(yeoman.dist + 'fonts/'))
-        // gulp.src(yeoman.app + 'swagger-ui/**/*', {'base': 'src/'}).
-            // pipe(gulp.dest(yeoman.dist))
     );
 });
 
